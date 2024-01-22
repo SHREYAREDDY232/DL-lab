@@ -1,0 +1,47 @@
+class McCullochPittsNeuron:
+    def _init_(self, weights, threshold):
+        self.weights = weights
+        self.threshold = threshold
+
+    def activate(self, inputs):
+        weighted_sum = sum([inputs[i] * self.weights[i] 
+        for i in range(len(inputs))])
+        return 1 if weighted_sum >= self.threshold else 0
+
+# AND1 Logic Function
+and_weights1 = [1, -1]
+and_threshold = 1
+and_neuron1 = McCullochPittsNeuron(and_weights1, and_threshold)
+
+# AND2 Logic Function
+and_weights2 = [-1, 1]
+and_threshold = 1
+and_neuron2 = McCullochPittsNeuron(and_weights2, and_threshold)
+
+# OR Logic Function
+or_weights = [1, 1]
+or_threshold = 1
+or_neuron = McCullochPittsNeuron(or_weights, or_threshold)
+
+# Test AND logic function
+input_values_and1 = [(0, 0), (0, 1), (1, 0), (1, 1)]
+print("AND Logic Function1:")
+for inputs in input_values_and1:
+    output = and_neuron1.activate(inputs)
+    print(f"Input: {inputs}, Output: {output}")
+    
+# Test AND logic function
+input_values_and2 = [(0, 0), (0, 1), (1, 0), (1, 1)]
+print("AND Logic Function2:")
+for inputs in input_values_and2:
+    output = and_neuron2.activate(inputs)
+    print(f"Input: {inputs}, Output: {output}")
+    
+# Test XOR logic function
+input_values_xor = [(0, 0), (0, 1), (1, 0), (0, 0)]
+print("\nXOR Logic Function:")
+for inputs in input_values_xor:
+    output = or_neuron.activate(inputs)
+    print(f"Input: {inputs}, Output: {output}")
+
+
