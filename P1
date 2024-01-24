@@ -1,4 +1,3 @@
-
 class McCullochPittsNeuron:
     def _init_(self, weights, threshold):
         self.weights = weights
