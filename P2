@@ -4,44 +4,44 @@ class McCullochPittsNeuron:
         self.threshold = threshold
 
     def activate(self, inputs):
-        weighted_sum = sum([inputs[i] * self.weights[i] 
-        for i in range(len(inputs))])
+        weighted_sum = sum([inputs[i] * self.weights[i] for i in range(len(inputs))])
         return 1 if weighted_sum >= self.threshold else 0
 
-# AND1 Logic Function
-and_weights1 = [1, -1]
-and_threshold = 1
-and_neuron1 = McCullochPittsNeuron(and_weights1, and_threshold)
+# AND-NOT Logic Function
+and_not_weights = [1, -1]
+and_not_threshold = 1
+and_not_neurons = McCullochPittsNeuron(and_not_weights, and_not_threshold)
 
-# AND2 Logic Function
-and_weights2 = [-1, 1]
-and_threshold = 1
-and_neuron2 = McCullochPittsNeuron(and_weights2, and_threshold)
+input_values_and = [(0, 0), (0, 1), (1, 0), (1, 1)]
+print("AND-NOT Logic Function:")
+for inputs in input_values_and:
+    output = and_not_neurons.activate(inputs)
+    print(f"Input: {inputs}, Output: {output}")
+
+# NAND Logic Function
+nand_weights = [-1, -1]
+nand_threshold = -1
+nand_neurons = McCullochPittsNeuron(nand_weights, nand_threshold)
 
 # OR Logic Function
 or_weights = [1, 1]
 or_threshold = 1
-or_neuron = McCullochPittsNeuron(or_weights, or_threshold)
+or_neurons = McCullochPittsNeuron(or_weights, or_threshold)
 
-# Test AND logic function
-input_values_and1 = [(0, 0), (0, 1), (1, 0), (1, 1)]
-print("AND Logic Function1:")
-for inputs in input_values_and1:
-    output = and_neuron1.activate(inputs)
-    print(f"Input: {inputs}, Output: {output}")
-    
-# Test AND logic function
-input_values_and2 = [(0, 0), (0, 1), (1, 0), (1, 1)]
-print("AND Logic Function2:")
-for inputs in input_values_and2:
-    output = and_neuron2.activate(inputs)
-    print(f"Input: {inputs}, Output: {output}")
-    
+# XOR Logic Function
+xor_weights = [1, 1]
+xor_threshold = 2
+xor_neurons = McCullochPittsNeuron(xor_weights, xor_threshold)
+
 # Test XOR logic function
-input_values_xor = [(0, 0), (0, 1), (1, 0), (0, 0)]
-print("\nXOR Logic Function:")
+input_values_xor = [(0, 0), (0, 1), (1, 0), (1, 1)]
+print("XOR Logic Function:")
 for inputs in input_values_xor:
-    output = or_neuron.activate(inputs)
+    nand_result = nand_neurons.activate(inputs)
+    or_result = or_neurons.activate(inputs)
+    
+    # Pass the combined result to the XOR neuron
+    output = xor_neurons.activate((nand_result, or_result))
+    
     print(f"Input: {inputs}, Output: {output}")
-
 
