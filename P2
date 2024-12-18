@@ -1,47 +1,39 @@
-class McCullochPittsNeuron:
-    def _init_(self, weights, threshold):
-        self.weights = weights
-        self.threshold = threshold
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+# Read the image
+image_path= 'image2.tif'
+img= cv2.imread(image_path, cv2.IMREAD_GRAYSCALE) # Read the image in grayscale
+if img is None:
+print("Error: Could not read the image.")
+else:
+# Compute the histogram of the original image
+hist_orig= cv2.calcHist([img], [0], None, [256], [0, 256])
+# Apply histogram equalization
+img_equalized= cv2.equalizeHist(img)
+# Compute the histogram of the equalized image
+hist_equalized= cv2.calcHist([img_equalized], [0], None, [256], [0, 256])
+# Plot the original and equalized images
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 2, 1)
+plt.imshow(img, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+plt.subplot(2, 2, 2)
+plt.plot(hist_orig)
+plt.title('Histogram of Original Image')
+plt.subplot(2, 2, 3)
+plt.imshow(img_equalized, cmap='gray')
+plt.title('Equalized Image')
+plt.axis('off')
+plt.subplot(2, 2, 4)
+plt.plot(hist_equalized)
+plt.title('Histogram of Equalized Image')
 
-    def activate(self, inputs):
-        weighted_sum = sum([inputs[i] * self.weights[i] for i in range(len(inputs))])
-        return 1 if weighted_sum >= self.threshold else 0
-
-# AND-NOT Logic Function
-and_not_weights = [1, -1]
-and_not_threshold = 1
-and_not_neurons = McCullochPittsNeuron(and_not_weights, and_not_threshold)
-
-input_values_and = [(0, 0), (0, 1), (1, 0), (1, 1)]
-print("AND-NOT Logic Function:")
-for inputs in input_values_and:
-    output = and_not_neurons.activate(inputs)
-    print(f"Input: {inputs}, Output: {output}")
-
-# NAND Logic Function
-nand_weights = [-1, -1]
-nand_threshold = -1
-nand_neurons = McCullochPittsNeuron(nand_weights, nand_threshold)
-
-# OR Logic Function
-or_weights = [1, 1]
-or_threshold = 1
-or_neurons = McCullochPittsNeuron(or_weights, or_threshold)
-
-# XOR Logic Function
-xor_weights = [1, 1]
-xor_threshold = 2
-xor_neurons = McCullochPittsNeuron(xor_weights, xor_threshold)
-
-# Test XOR logic function
-input_values_xor = [(0, 0), (0, 1), (1, 0), (1, 1)]
-print("XOR Logic Function:")
-for inputs in input_values_xor:
-    nand_result = nand_neurons.activate(inputs)
-    or_result = or_neurons.activate(inputs)
-    
-    # Pass the combined result to the XOR neuron
-    output = xor_neurons.activate((nand_result, or_result))
-    
-    print(f"Input: {inputs}, Output: {output}")
-
+plt.tight_layout()
+plt.show()
+# Display the original and equalized images using OpenCV
+cv2.imshow('Original Image', img)
+cv2.imshow('Equalized Image', img_equalized)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
