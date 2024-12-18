@@ -1,48 +1,55 @@
+import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-class KohonenSOM:
-    def _init_(self,input_size,map_size):
-        self.input_size=input_size
-        self.map_size=map_size
-        self.weights=np.random.rand(map_size[0],map_size[1],input_size)
-    def update_weights (self,input_vector,learning_rate,winner,neighbourhood_radius):
-        for i in range(self.map_size[0]):
-            for j in range(self.map_size[1]):
-                weight_vector=self.weights[i,j,:]
-                distance=np.linalg.norm(np.array([i,j])-np.array(winner))
-                influence=np.exp(-(distance*2)/(2*neighbourhood_radius*2))
-                self.weights[i,j,:]+=learning_rate*influence*(input_vector-weight_vector)
-    def  train(self,data,epochs,initial_learning_rate=0.1,initial_radius=None):
-        if initial_radius is None:
-            initial_radius=max(self.map_size)/2
-        for epoch in range(epochs):
-            learning_rate=initial_learning_rate*np.exp(-epoch/epochs)
-            neighbourhood_radius=initial_radius*np.exp(-epoch/epochs)
-        for input_vector in data:
-            winner=self.find_winner(input_vector)
-            self.update_weights(input_vector,learning_rate,winner,neighbourhood_radius)
-    def find_winner(self,input_vector):
-        min_distance=float('inf')
-        winner=(0,0)
-        for i in range(self.map_size[0]):
-            for j in range(self.map_size[1]):
-                weight_vector=self.weights[i,j,:]
-                distance=np.linalg.norm(input_vector-weight_vector)
-                if distance<min_distance:
-                    min_distance=distance
-                    winner=(i,j)
-        return winner
-    def visualise(self,data):
-        colors = ['r','g','b','y','c','m']
-        for input_vector in data:
-            winner=self.find_winner(input_vector)
-            plt.scatter(winner[0],winner[1],color=colors[np.random.randint(len(colors))])
-        for i in range(self.map_size[0]):
-            for j in range(self.map_size[1]):
-                plt.scatter(i,j,color='k',marker='x')
-        plt.show()
-if _name=="main_":
-                data=np.random.rand(100,2)
-                som=KohonenSOM(input_size=2,map_size=(10,10))
-                som.train(data,epochs=100)
-                som.visualise(data)
+# Load a binary image (ensure the image is in binary format, or convert it)
+image= cv2.imread('images/image6-1.png', 0) # 0 loads the image in grayscale
+# Create structuring elements
+kernel = np.ones((5,5), np.uint8) # You can change the size and shape
+# 1. Apply Erosion to a Binary Image
+erosion = cv2.erode(image, kernel, iterations=1)
+# 2. Apply Dilation to a Binary Image
+dilation = cv2.dilate(image, kernel, iterations=1)
+# 3. Apply Opening Operation (Erosion followed by Dilation)
+opening= cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+# 4. Apply Closing Operation (Dilation followed by Erosion)
+closing= cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+# 5. Implement Morphological Gradient (Dilation minus Erosion)
+gradient= cv2.morphologyEx(image, cv2.MORPH_GRADIENT, kernel)
+# Plot all the transformations for comparison
+plt.figure(figsize=(10, 10))
+plt.subplot(2, 3, 1)
+plt.imshow(image, cmap='gray')
+plt.title('Original Image')
+plt.axis('off')
+plt.subplot(2, 3, 2)
+plt.imshow(erosion, cmap='gray')
+plt.title('Erosion')
+plt.axis('off')
+plt.subplot(2, 3, 3)
+plt.imshow(dilation, cmap='gray')
+1 of 4 14-12-2024, 20:24
+DIP LAB 6 - Jupyter Notebook http://localhost:8888/notebooks/DIP%20LAB%206.ipynb
+plt.title('Dilation')
+plt.axis('off')
+plt.subplot(2, 3, 4)
+plt.imshow(opening, cmap='gray')
+plt.title('Opening')
+plt.axis('off')
+plt.subplot(2, 3, 5)
+plt.imshow(closing, cmap='gray')
+plt.title('Closing')
+plt.axis('off')
+plt.subplot(2, 3, 6)
+plt.imshow(gradient, cmap='gray')
+plt.title('Morphological Gradient')
+plt.axis('off')
+plt.show()
+# To compare effects of different structuring elements, you can modify the kernel and repeat the above operations.
+# Example: Try a different shape or size of the structuring element
+kernel_cross= cv2.getStructuringElement(cv2.MORPH_CROSS, (5, 5))
+dilation_cross= cv2.dilate(image, kernel_cross, iterations=1)
+# Display result of dilation with different structuring element
+plt.imshow(dilation_cross, cmap='gray')
+plt.title('Dilation with Cross-shaped Kernel')
+plt.axis('off')
+plt.show()
