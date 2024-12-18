@@ -1,41 +1,38 @@
+import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+img_path='image5.tif'
+img=cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)
+if img is None:
+print("Error:could not read the image")
+else:
+edges=cv2.Canny(img,100,200)
+plt.figure(figsize=(12,6))
+plt.subplot(1,2,1)
+plt.imshow(edges,cmap='gray')
+plt.title("edged image")
+plt.axis('off')
+cv2.imwrite('edges_canny.jpg',edges)
 
-class DiscreteHopfieldNetwork:
-    def _init_(self, num_neurons):
-        self.num_neurons = num_neurons
-        self.weights = np.zeros((num_neurons, num_neurons))
-
-    def train(self, patterns):
-        for pattern in patterns:
-            pattern = np.array(pattern)
-            outer_product = np.outer(pattern, pattern)
-            np.fill_diagonal(outer_product, 0)
-            self.weights += outer_product
-
-    def energy(self, state):
-        state = np.array(state)
-        return -0.5 * np.dot(state, np.dot(self.weights, state))
-
-    def update_rule(self, state):
-        new_state = np.sign(np.dot(self.weights, state))
-        new_state[new_state >= 0] = 1
-        new_state[new_state < 0] = 0
-        return new_state
-
-    def run(self, initial_state, max_iterations=100):
-        current_state = np.array(initial_state)
-        for _ in range(max_iterations):
-            new_state = self.update_rule(current_state)
-            if np.array_equal(new_state, current_state):
-                break
-            current_state = new_state
-        return current_state
-
-hopfield_net = DiscreteHopfieldNetwork(4)
-training_patterns = [[1, 1, 1, -1]]
-hopfield_net.train(training_patterns)
-initial_state = [0, 0, 1, 0]
-result = hopfield_net.run(initial_state)
-print('Initial state', initial_state)
-print("Final state", result)
-print("Energy of the state", hopfield_net.energy(result))
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+img_path='image5.tif'
+img=cv2.imread(img_path,cv2.IMREAD_GRAYSCALE)
+if img is None:
+print("Error:could not read the image")
+else:
+_, global_thresh=cv2.threshold(img,127,255,cv2.THRESH_BINARY)
+adaptive_thresh=cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+plt.figure(figsize=(12,6))
+plt.subplot(1,2,1)
+plt.imshow(global_thresh,cmap='gray')
+plt.title("global threshold image")
+plt.axis('off')
+plt.subplot(1,2,2)
+plt.imshow(adaptive_thresh,cmap='gray')
+plt.title("adaptive threshold image")
+plt.axis('off')
+plt.show()
+cv2.imwrite('global_threshold.jpg',global_thresh)
+cv2.imwrite('adaptive_threshold.jpg',adaptive_thresh)
