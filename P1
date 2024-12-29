@@ -1,13 +1,38 @@
-import cv2 as cv
-import matplotlib.pyplot as plt
-import numpy as n
-def convertToRGB(img):
-return cv.cvtColor(img, cv.COLOR_BGR2RGB)
-face_cascade= cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
-image=cv.imread('images/image8.jfif')
-grayimage=cv.cvtColor(image,cv.COLOR_BGR2GRAY)
-faces=face_cascade.detectMultiScale(grayimage,scaleFactor=1.11,minNeighbors=5)
-for (x, y, w, h) in faces:
-cv.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 1)
-plt.imshow(convertToRGB(image))
-print('no of faces:'),print(len(faces))
+package main
+
+import (
+	"fmt"
+	"math/big"
+)
+
+// Iterative approach to calculate factorial
+func factorialIterative(n int64) *big.Int {
+	result := big.NewInt(1)
+	for i := int64(2); i <= n; i++ {
+		result.Mul(result, big.NewInt(i))
+	}
+	return result
+}
+
+// Recursive approach to calculate factorial
+func factorialRecursive(n int64) *big.Int {
+	if n == 0 || n == 1 {
+		return big.NewInt(1)
+	}
+	result := big.NewInt(n)
+	return result.Mul(result, factorialRecursive(n-1))
+}
+
+func main() {
+	var num int64
+	fmt.Print("Enter a number: ")
+	fmt.Scan(&num)
+
+	if num < 0 {
+		fmt.Println("Factorial is not defined for negative numbers.")
+		return
+	}
+
+	fmt.Printf("Factorial of %d (Iterative): %v\n", num, factorialIterative(num))
+	fmt.Printf("Factorial of %d (Recursive): %v\n", num, factorialRecursive(num))
+}
