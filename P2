@@ -1,39 +1,38 @@
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-# Read the image
-image_path= 'image2.tif'
-img= cv2.imread(image_path, cv2.IMREAD_GRAYSCALE) # Read the image in grayscale
-if img is None:
-print("Error: Could not read the image.")
-else:
-# Compute the histogram of the original image
-hist_orig= cv2.calcHist([img], [0], None, [256], [0, 256])
-# Apply histogram equalization
-img_equalized= cv2.equalizeHist(img)
-# Compute the histogram of the equalized image
-hist_equalized= cv2.calcHist([img_equalized], [0], None, [256], [0, 256])
-# Plot the original and equalized images
-plt.figure(figsize=(12, 6))
-plt.subplot(2, 2, 1)
-plt.imshow(img, cmap='gray')
-plt.title('Original Image')
-plt.axis('off')
-plt.subplot(2, 2, 2)
-plt.plot(hist_orig)
-plt.title('Histogram of Original Image')
-plt.subplot(2, 2, 3)
-plt.imshow(img_equalized, cmap='gray')
-plt.title('Equalized Image')
-plt.axis('off')
-plt.subplot(2, 2, 4)
-plt.plot(hist_equalized)
-plt.title('Histogram of Equalized Image')
+package main
 
-plt.tight_layout()
-plt.show()
-# Display the original and equalized images using OpenCV
-cv2.imshow('Original Image', img)
-cv2.imshow('Equalized Image', img_equalized)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+import "fmt"
+
+type BankAccount struct {
+	accountHolder string
+	balance       float64
+}
+
+func (b *BankAccount) Deposit(amount float64) {
+	b.balance += amount
+	fmt.Printf("Deposited: %.2f\n", amount)
+}
+
+func (b *BankAccount) Withdraw(amount float64) {
+	if amount > b.balance {
+		fmt.Println("Insufficient funds!")
+	} else {
+		b.balance -= amount
+		fmt.Printf("Withdrawn: %.2f\n", amount)
+	}
+}
+
+func (b *BankAccount) CheckBalance() float64 {
+	return b.balance
+}
+
+func main() {
+	account := BankAccount{
+		accountHolder: "John Doe",
+		balance:       1000.09,
+	}
+	account.Deposit(500)
+	account.Withdraw(300)
+	fmt.Printf("Current Balance: %.2f\n", account.CheckBalance())
+	account.Withdraw(1500)
+	fmt.Printf("Balance after withdrawal: %.2f\n", account.CheckBalance())
+}
